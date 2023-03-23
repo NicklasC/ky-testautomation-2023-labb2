@@ -25,7 +25,7 @@ class SeleniumTests {
         // Hämta in de webdrivers du vill använda
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        //options.addArguments("incognito");
+        options.addArguments("incognito");
         driver = new ChromeDriver(options);
     }
 
