@@ -7,17 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Sleeper;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.JavascriptExecutor;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -51,11 +46,12 @@ class SeleniumTests {
         acceptAllButton.click();
 
         // TODO: Here we are doing an ugly wait to wait for the "saving your selection" after clicking 'acceptera alla' button above. Can be improved at some point.
-        try {
+        sleep(5);
+        /*try {
             Thread.sleep(5000); // Sleep for 5 seconds (5000 milliseconds)
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @AfterAll
@@ -130,8 +126,117 @@ class SeleniumTests {
         WebElement kategorierSection = driver.findElement(By.cssSelector("section[aria-label='Kategorier']"));
         List<WebElement> h2Elements = kategorierSection.findElements(By.tagName("h2"));
 
-        assertEquals(18, h2Elements.size(), "18 categories did not show...");
+        assertEquals(17, h2Elements.size(), "17 categories did not show...");
     }
 
     // Test 7-: Skriv ytterligare 5 olika test för SVT Play där minst Locators för xpath, CSSselector och className används. Utgå från vad du själv skulle valt att testa om du arbetade för SVT med webbplatsen.
+
+    // 7.1 Verify you can search on the site
+    @Test
+    public void verifySearchLeadsToSearchResultPage(){
+        WebElement searchField = driver.findElement(By.id("search"));
+        WebElement searchButton = driver.findElement(By.xpath("//button[@type='submit' and @title='Sök på svtplay.se']"));
+
+        searchField.sendKeys("ag");
+        searchButton.click();
+
+
+        WebElement searchResult = driver.findElement(By.xpath("//h2[@data-rt='header-search-result']"));
+
+        String searchResultText = searchResult.getText();
+        String searchResultTextSubSelection = searchResultText.substring(0,21);
+
+        assertEquals("Din sökning på ag gav",searchResultTextSubSelection,"Some form of search results seems to display");
+        assertEquals("https://www.svtplay.se/sok?q=ag",driver.getCurrentUrl(),"Expected search result page URL is not correct)");
+
+        sleep(5);
+    }
+
+    // 7.2 Verify cookies information link displays.
+    @Test
+    public void cookieInformationLinkDisplays(){
+        WebElement link = driver.findElement(By.xpath("//a[@href='https://kontakt.svt.se/guide/cookies-och-personuppgifter']"));
+        String text = link.getText();
+        String textSelection = text.substring(0,30);
+
+        assertEquals("Om cookies och personuppgifter",textSelection,"cookie information link text is not correct");
+    }
+
+    // 7.3 Verify cookies information page displays.
+    @Test
+    public void cookieInformationLinkLeadsToCorrectPage(){
+        WebElement link = driver.findElement(By.xpath("//a[@href='https://kontakt.svt.se/guide/cookies-och-personuppgifter']"));
+        link.click();
+
+        WebElement header = driver.findElement(By.className("text-3xl"));
+
+        assertEquals("Om cookies och personuppgiftsbehandling på SVT",header.getText(),"cookie information header text is not correct");
+    }
+
+    // 7.4.1 Verify TV tablå for channels displays
+    @Test
+    public void TVTablåForSVT1Displays(){
+        driver.get(("https://www.svtplay.se/kanaler"));
+        WebElement section = driver.findElement(By.cssSelector("section[aria-label='Tablå för SVT 1']"));
+        assertEquals(true,section.isDisplayed(),"Tablå for SVT1 did not display");
+    }
+
+    // 7.4.2
+    @Test
+    public void TVTablåForSVT2Displays(){
+        driver.get(("https://www.svtplay.se/kanaler"));
+        WebElement section = driver.findElement(By.cssSelector("section[aria-label='Tablå för SVT 2']"));
+        assertEquals(true,section.isDisplayed(),"Tablå for SVT2 did not display");
+    }
+
+    //7.4.3
+    @Test
+    public void TVTablåForSVTBarnDisplays(){
+        driver.get(("https://www.svtplay.se/kanaler"));
+        WebElement section = driver.findElement(By.cssSelector("section[aria-label='Tablå för SVT Barn']"));
+        assertEquals(true,section.isDisplayed(),"Tablå for SVT Barn did not display");
+    }
+
+    //7.4.4
+    @Test
+    public void TVTablåForKunskapskanalenDisplays(){
+        driver.get(("https://www.svtplay.se/kanaler"));
+        WebElement section = driver.findElement(By.cssSelector("section[aria-label='Tablå för Kunskapskanalen']"));
+        assertEquals(true,section.isDisplayed(),"Tablå for Kunskapskanalen did not display");
+    }
+
+    // 7.5.1
+    @Test
+    public void NyhetsbrevLinkDisplays(){
+        WebElement link = driver.findElement(By.xpath("//a[@href='https://nyhetsbrev.svtplay.se/prenumerera/?utm_source=svtplay&utm_medium=footer-cta']"));
+        String text = link.getText();
+        String textSelection = text.substring(0,10);
+
+        assertEquals("Nyhetsbrev",textSelection,"Nyhetsbrev link text is not correct");
+    }
+
+    // 7.5.2 Verify cookies information page displays.
+    @Test
+    public void NyhetsbrevLinkLeadsToCorrectPage(){
+        WebElement link = driver.findElement(By.xpath("//a[@href='https://nyhetsbrev.svtplay.se/prenumerera/?utm_source=svtplay&utm_medium=footer-cta']"));
+        link.click();
+
+        WebElement header = driver.findElement(By.xpath("//h1"));
+
+        //String headerText=header.getText();
+
+        assertEquals("Missa inga program och serier!",header.getText(),"nyhetsbrev title page not correct");
+    }
+
+
+
+
+
+    public static void sleep(int numberOfSeconds){
+        try {
+            Thread.sleep(numberOfSeconds * 1000); // Sleep for 5 seconds (5000 milliseconds)
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
