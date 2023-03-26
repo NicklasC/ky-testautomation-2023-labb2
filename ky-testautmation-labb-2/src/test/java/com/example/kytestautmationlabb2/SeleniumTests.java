@@ -283,7 +283,6 @@ class SeleniumTests {
 
         // Now only season 2 episodes are listed. Fetching the season 2 episodes into a list
 
-
         List<WebElement> season2EpisodesList = driver.findElements(By.tagName("h3"));
 
         // Going through all H3 elements. We are only interested in elements that contains text. I did not know how to filter that using findElements, so I did it programatically instead.
@@ -292,8 +291,6 @@ class SeleniumTests {
         for (WebElement episode : season2EpisodesList) {
             if (episode.getText().length() > 0) {
                 numberOfEpisodes++;
-                // Writes all h3 elements text
-                System.out.println(episode.getText());
             }
         }
 
