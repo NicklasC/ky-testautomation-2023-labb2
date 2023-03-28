@@ -70,7 +70,7 @@ class SeleniumTests {
     @Test
     // Test 2:  Kontrollera att webbplatsens logotyp är synlig
     public void testLogotypeIsVisible() {
-        WebElement logo = driver.findElement(By.xpath("//a[@data-rt-spec=\"play-logo\" and @href=\"/\"]"));
+        WebElement logo = driver.findElement(By.xpath("//a[@data-rt=\"play-logo\" and @href=\"/\"]"));
         assertEquals(true, logo.isDisplayed(), "I could not find the logo..");
     }
 
@@ -128,7 +128,7 @@ class SeleniumTests {
     // 7.1 Verify you can search on the site
     @Test
     public void verifySearchLeadsToSearchResultPage() {
-        WebElement searchField = driver.findElement(By.id("search"));
+        WebElement searchField = driver.findElement(By.cssSelector("input[name='q']"));
         WebElement searchButton = driver.findElement(By.xpath("//button[@type='submit' and @title='Sök på svtplay.se']"));
 
         searchField.sendKeys("ag");
